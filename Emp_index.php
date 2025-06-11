@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Alpha Management</title>
+  <style>
+/* General styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, black, #0077b6);
+    transition: background 0.5s ease;
+}
+
+#navbar {
+    background-color: black;
+    height: 3.75rem; /* 60px converted to rem */
+    display: flex;
+    justify-content: space-between; /* Space between left and right elements */
+    align-items: center;
+    padding: 0 1.25rem; /* 20px converted to rem */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.left-nav {
+    display: flex;
+    align-items: center; /* Center logo and menu vertically */
+}
+
+#logo {
+    height: 5rem; /* 80px converted to rem */
+    margin-left: 2rem; /* 32px converted to rem */
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.slideshow {
+    position: relative; /* Needed for absolute positioning of overlay */
+    width: 100%; /* Ensure full width */
+    height: 25rem; /* 400px converted to rem */
+    overflow: hidden; /* Hide overflow */
+    border: 0.3125rem solid white; /* 5px converted to rem */
+    box-sizing: border-box; /* Include border in element's total width and height */
+    border-radius: 1.25rem; /* 20px converted to rem */
+    margin-bottom: 3.125rem; /* 50px converted to rem */
+}
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Hide inactive slides */
+    transition: opacity 1s ease; /* Smooth transition */
+}
+
+.slide.active {
+    opacity: 1; /* Show active slide */
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure images cover the area */
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the text */
+    color: white; /* Text color */
+    font-size: 3.125rem; /* 5rem converted to rem */
+    text-shadow: 0.125rem 0.125rem 0.25rem rgba(0, 0, 0, 0.7); /* Optional: text shadow for readability */
+}
+
+/* Search Bar */
+.search-container {
+    display: flex;
+    justify-content: center; /* Center align the search bar */
+    margin: 1.25rem; /* 20px converted to rem */
+}
+
+#search-input {
+    width: 18.75rem; /* 300px converted to rem */
+    padding: 0.625rem; /* 10px converted to rem */
+    border: 0.0625rem solid #ccc; /* 1px converted to rem */
+    border-radius: 0.3125rem; /* 5px converted to rem */
+    font-size: 1rem; /* 16px converted to rem */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s; /* Transition for border color */
+}
+
+#search-input:focus {
+    border-color: #007bff; /* Change border color on focus */
+}
+
+.search-container button {
+    padding: 0.625rem 0.9375rem; /* 10px 15px converted to rem */
+    width: auto;
+    margin-left: 0.625rem; /* 10px converted to rem */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 0.3125rem; /* 5px converted to rem */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition for hover */
+}
+
+.search-container button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+h2 {
+    color: white;
+}
+
+.branches-grid {
+    padding: 1.25rem; /* 20px converted to rem */
+}
+
+.branches-grid h2 {
+    text-align: center;
+    margin-bottom: 1.25rem; /* 20px converted to rem */
+}
+
+.branches {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem; /* 20px converted to rem */
+    flex-wrap: wrap;
+}
+
+.branch-card {
+    background-color: white;
+    padding: 1.25rem; /* 20px converted to rem */
+    width: 18.75rem; /* 300px converted to rem */
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* Shadow effect */
+    border-radius: 0.5rem; /* 8px converted to rem */
+}
+
+.branch-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem; /* 8px converted to rem */
+}
+
+.branch-card h3 {
+    color: #0077b6;
+}
+
+.ulli ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.ulli li {
+    margin-bottom: 0.625rem; /* 10px converted to rem */
+}
+
+/* Adding tick mark before list items */
+.ulli li::before {
+    content: '✔️';
+    color: green;
+    margin-right: 0.625rem; /* 10px converted to rem */
+}
+
+.branch-card p {
+    margin: 0.3125rem 0; /* 5px converted to rem */
+}
+
+/* Styling different context texts */
+.branch-card p strong {
+    color: #333;
+}
+
+.price {
+    color: #f44336; /* Red for discounted price */
+}
+
+.original-price {
+    color: #888; /* Grey for original price */
+    text-decoration: line-through;
+}
+
+.rating {
+    color: #ffa500;
+    font-size: 1.125rem; /* 18px converted to rem */
+}
+
+/* Styling the rating stars */
+.stars {
+    display: inline-block;
+}
+
+.stars span {
+    color: #ffa500; /* Yellow color for stars */
+    font-size: 1.125rem; /* 18px converted to rem */
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    padding: 0.625rem; /* 10px converted to rem */
+    background: #0077b6;
+    color: black;
+    border: none;
+    font-size: 1.125rem; /* 18px converted to rem */
+    cursor: pointer;
+    border-radius: 0.25rem; /* 4px converted to rem */
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transition properties */
+}
+
+/* Optional: Add hover effect for better user experience */
+button:hover {
+    background-color: #0056b3; /* Change background on hover */
+    opacity: 0.8; /* Slightly transparent on hover */
+    transform: scale(1.05); /* Slightly scale up on hover */
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.25rem; /* Adjust as needed */
+}
+
+.arrow {
+    font-size: 1.5rem; /* Adjust size */
+    padding: 0.625rem 0.9375rem; /* Space around the arrow */
+    background-color: black; /* Background color */
+    color: white; /* Arrow color */
+    border-radius: 50%; /* Round shape */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition for hover */
+}
+
+.arrow:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Side Menu */
+.side-menu {
+    position: fixed;
+    left: -15.625rem; /* -250px converted to rem */
+    top: 0;
+    height: 100%;
+    width: 15.625rem; /* 250px converted to rem */
+    background-color: #333;
+    transition: left 0.3s;
+    z-index: 1000;
+    display: none; /* Hide side menu by default */
+}
+
+.side-menu.show {
+    display: block; /* Show the side menu when the class is added */
+    left: 0; /* Slide in from the left */
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    padding: 0.625rem; /* 10px converted to rem */
+    text-decoration: none;
+}
+
+.side-menu a:hover {
+    background-color: #575757;
+}
+
+.side-menu-toggle {
+    cursor: pointer;
+    padding: 1.1875rem; /* 19px converted to rem */
+    color: white;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+}
+
+/* Style for displaying search results */
+.results {
+    margin-top: 1.25rem; /* 20px converted to rem */
+    text-align: center;
+}
+
+.hotel {
+    margin: 0.625rem 0; /* 10px converted to rem */
+    padding: 0.625rem; /* 10px converted to rem */
+    background-color: #f8f8f8; /* Light background */
+    border-radius: 0.3125rem; /* 5px converted to rem */
+}
+
+.no-results {
+    color: red; /* Red for no results */
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Side Menu Button -->
+  <div class="navbar" id="navbar">
+    <div class="left-nav">
+        <div class="side-menu-toggle" onclick="toggleMenu()">☰</div>
+        <img id="logo" src="images/logo.png" alt="Hotel Alpha Logo">
+    </div>
+    <a href="signup.php"><b>Sign in</b></a> 
+</div>
+
+  <!-- Side Menu: Employee -->
+  <div class="side-menu" id="sideMenu">
+    <a href="Emp_index.html">☰ Home</a>
+    <a href="customer_management.php">Customer Management</a>
+    <a href="room_available.php">Room Availabilty</a>
+    <a href="staff_overtime.php">Staff Overtime</a>
+    <a href="staffadmission.php">Staff Admission</a>
+    <a href="about.html">About us</a>
+  </div>
+
+  <!-- Header with logo and slideshow -->
+  <header>
+    <div class="slideshow">
+        <div class="slide active">
+            <img src="images/room1.jpg" alt="Room 1">
+            <div class="overlay">Exclusive Deals</div>
+        </div>
+        <div class="slide">
+            <img src="images/room2.jpg" alt="Room 2">
+            <div class="overlay">Limited-Time Offers</div>
+        </div>
+        <div class="slide">
+            <img src="images/room3.jpg" alt="Room 3">
+            <div class="overlay">Luxury Experiences</div>
+        </div>
+    </div>
+</header>
+
+
+  <!-- Main content -->
+  <main>
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Search by location or hotel name" />
+      <button onclick="performSearch()">Search</button>
+  </div>
+  
+  <div class="results" id="results-container"></div>
+  
+    
+
+    <section class="branches-grid" id="branches">
+      <h2>Our Branches</h2>
+      <div class="branches">
+        <!-- Branches 1-4 -->
+        <div class="branch-card" id="branch-Pharos-Hotel-Nungambakkam">
+          <img src="images/branch1.jpg" alt="Pharos Hotel - Nungambakkam">
+          <h3>Pharos Hotel - Nungambakkam</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Couple Friendly</li>
+              <li>Free Cancellation till 24 hrs before check-in</li>
+              <li>Breakfast Included</li>
+              <li>Centrally located in Chennai, well-appointed rooms, delicious breakfast buffet</li>
+              <li>Key amenities: Spa, Swimming Pool, Gym</li>
+            </ul>
+          </div>
+          <p>This 3 Star Hotel in Chennai is located in Nungambakkam.</p>
+          <p><strong>Full Address:</strong> no 145, STERLING ROAD, NUNGAMBAKKAM, Chennai, Tamil Nadu, 600034</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Excellent 4.3</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>☆</span>
+            </span>
+            (207 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 4,999</span> 
+            <span class="price">₹ 4,415</span> + ₹ 1,100 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-Royal-Palace-Jaipur">
+          <img src="images/branch2.jpg" alt="Royal Palace - Jaipur">
+          <h3>Royal Palace - Jaipur</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Heritage Property</li>
+              <li>Free Guided Tours</li>
+              <li>Authentic Rajasthani Cuisine</li>
+              <li>Experience the royal history of Jaipur</li>
+              <li>Key amenities: Pool, Spa, Restaurant</li>
+            </ul>
+          </div>
+          <p>Experience the grandeur of Rajasthan in this beautiful heritage hotel.</p>
+          <p><strong>Full Address:</strong> 45, M.I. Road, Jaipur, Rajasthan, 302001</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Very Good 4.5</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>☆</span>
+            </span>
+            (150 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 6,500</span> 
+            <span class="price">₹ 5,500</span> + ₹ 800 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-Beachside-Resort-Goa">
+          <img src="images/branch3.jpg" alt="Beachside Resort - Goa">
+          <h3>Beachside Resort - Goa</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Beach Access</li>
+              <li>Free Water Sports Activities</li>
+              <li>Live Music and Dance Nights</li>
+              <li>Relax and enjoy the sun on the sandy beaches</li>
+              <li>Key amenities: Bar, Swimming Pool, Spa</li>
+            </ul>
+          </div>
+          <p>A perfect beach getaway with vibrant nightlife and serene views.</p>
+          <p><strong>Full Address:</strong> 123, Calangute Beach, Goa, 403516</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Excellent 4.6</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+            </span>
+            (300 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 7,000</span> 
+            <span class="price">₹ 6,200</span> + ₹ 1,000 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-Mountain-Lodge-Shimla">
+          <img src="images/branch4.jpg" alt="Mountain Lodge - Shimla">
+          <h3>Mountain Lodge - Shimla</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Stunning Mountain Views</li>
+              <li>Free Breakfast</li>
+              <li>Outdoor Activities</li>
+              <li>Explore the beautiful landscapes of Shimla</li>
+              <li>Key amenities: Garden, Café</li>
+            </ul>
+          </div>
+          <p>A cozy lodge with breathtaking views of the mountains.</p>
+          <p><strong>Full Address:</strong> The Mall, Shimla, Himachal Pradesh, 171001</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Very Good 4.4</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>☆</span>
+            </span>
+            (250 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 5,500</span> 
+            <span class="price">₹ 4,900</span> + ₹ 700 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        
+      </div>
+      <!-- Navigation Arrows for Next Set -->
+    <!-- Navigation Arrows for Previous/Next Set -->
+    <!-- <div class="navigation">
+      <span class="arrow next" onclick="showNext()">&#10095;</span> 
+    </div> -->
+  
+      <!-- Second Set of Branches -->
+      <div class="branches" style="display: none;">
+        <div class="branch-card" id="branch-Safari-Inn-Masai-Mara">
+          <img src="images/branch5.jpg" alt="Safari Inn - Masai Mara">
+          <h3>Safari Inn - Masai Mara</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Wildlife Experience</li>
+              <li>Guided Safaris</li>
+              <li>Luxury Tents</li>
+              <li>Explore the beauty of the Masai Mara</li>
+              <li>Key amenities: Restaurant, Bar</li>
+            </ul>
+          </div>
+          <p>Enjoy a thrilling wildlife experience in the heart of Africa.</p>
+          <p><strong>Full Address:</strong> Masai Mara National Reserve, Kenya</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Excellent 4.8</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+            </span>
+            (500 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 15,000</span> 
+            <span class="price">₹ 12,500</span> + ₹ 2,000 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-City-View-Hotel-New-York">
+          <img src="images/branch1.jpg" alt="City View Hotel - New York">
+          <h3>City View Hotel - New York</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Skyline Views</li>
+              <li>Complimentary Breakfast</li>
+              <li>Central Location</li>
+              <li>Experience the bustling city life of New York</li>
+              <li>Key amenities: Rooftop Bar, Gym</li>
+            </ul>
+          </div>
+          <p>A luxurious stay with stunning views of the New York skyline.</p>
+          <p><strong>Full Address:</strong> 10, 5th Ave, New York, NY 10010, USA</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Very Good 4.5</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>☆</span>
+            </span>
+            (300 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 18,000</span> 
+            <span class="price">₹ 16,000</span> + ₹ 2,500 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-Tropical-Paradise-Bali">
+          <img src="images/branch2.jpg" alt="Tropical Paradise - Bali">
+          <h3>Tropical Paradise - Bali</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Beachfront Access</li>
+              <li>Free Spa Services</li>
+              <li>Traditional Balinese Cuisine</li>
+              <li>Relax and rejuvenate in paradise</li>
+              <li>Key amenities: Infinity Pool, Yoga Classes</li>
+            </ul>
+          </div>
+          <p>A dreamy escape to the beautiful beaches of Bali.</p>
+          <p><strong>Full Address:</strong> Seminyak Beach, Bali, Indonesia</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Excellent 4.9</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+            </span>
+            (450 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 14,000</span> 
+            <span class="price">₹ 12,000</span> + ₹ 1,500 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-Luxury-Hotel-Dubai">
+          <img src="images/branch3.jpg" alt="Luxury Hotel - Dubai">
+          <h3>Luxury Hotel - Dubai</h3>
+          <div class='ulli'>
+            <ul>
+              <li>World-Class Amenities</li>
+              <li>Free Airport Shuttle</li>
+              <li>Fine Dining Options</li>
+              <li>Experience luxury at its best</li>
+              <li>Key amenities: Pool, Spa, Fitness Center</li>
+            </ul>
+          </div>
+          <p>A lavish stay in the heart of Dubai.</p>
+          <p><strong>Full Address:</strong> Downtown Dubai, UAE</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Excellent 4.7</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>☆</span>
+            </span>
+            (600 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 25,000</span> 
+            <span class="price">₹ 22,000</span> + ₹ 3,000 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        
+      </div>
+      <!-- Navigation Arrows for Previous/Next Set -->
+
+
+        <!-- Third set of branches -->
+      <div class="branches" style="display: none;">
+        <div class="branch-card" id="Tranquil-Resort-Kerala">
+          <img src="images/branch4.jpg" alt="Tranquil Resort - Kerala">
+          <h3>Tranquil Resort - Kerala</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Backwater View</li>
+              <li>Free Ayurvedic Treatment</li>
+              <li>Authentic Kerala Cuisine</li>
+              <li>Relax amidst lush greenery and tranquil waters</li>
+              <li>Key amenities: Fishing, Canoeing</li>
+            </ul>
+          </div>
+          <p>A serene escape surrounded by the scenic backwaters of Kerala.</p>
+          <p><strong>Full Address:</strong> Alleppey, Kerala, 688001</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Excellent 4.8</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+            </span>
+            (500 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 6,000</span> 
+            <span class="price">₹ 5,000</span> + ₹ 900 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+  
+        <div class="branch-card" id="branch-Hilltop-Lodge-Mussoorie">
+          <img src="images/branch5.jpg" alt="Hilltop Lodge - Mussoorie">
+          <h3>Hilltop Lodge - Mussoorie</h3>
+          <div class='ulli'>
+            <ul>
+              <li>Mountain View Rooms</li>
+              <li>Free Tea and Snacks</li>
+              <li>Nature Trails</li>
+              <li>A perfect escape in the lap of nature</li>
+              <li>Key amenities: Bonfire, Library</li>
+            </ul>
+          </div>
+          <p>A cozy lodge offering breathtaking views of the hills and valleys.</p>
+          <p><strong>Full Address:</strong> Mall Road, Mussoorie, Uttarakhand, 248179</p>
+          <p><strong>Rating:</strong> 
+            <span class="rating">Very Good 4.5</span>
+            <span class="stars">
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>★</span>
+              <span>☆</span>
+            </span>
+            (220 Ratings)
+          </p>
+          <p><strong>Price:</strong> 
+            <span class="original-price">₹ 4,500</span> 
+            <span class="price">₹ 3,800</span> + ₹ 500 taxes & fees
+          </p>
+          <button onclick="bookNow()">Book now</button>
+        </div>
+      </div>
+      <!-- Navigation Arrows for Previous/Next Set -->
+      <!-- <div class="navigation">
+        <span class="arrow prev" onclick="showPrevious()">&#10094;</span> 
+      </div> -->
+      <div class="navigation">
+        <span class="arrow prev" onclick="showPrevious()">&#10094;</span> <!-- Left Arrow -->
+        <span class="arrow next" onclick="showNext()">&#10095;</span> <!-- Right Arrow -->
+      </div>
+    </div>
+    </section>
+
+
+  <!-- Footer
+  -->
+  <footer>
+
+    
+  </footer>
+
+  <!-- JavaScript functionality -->
+  <script>
+          let currentSet = 0;
+      const sets = document.querySelectorAll('.branches');
+  
+      function showNext() {
+        if (currentSet < sets.length - 1) {
+          sets[currentSet].style.display = 'none';
+          currentSet++;
+          sets[currentSet].style.display = 'flex';
+        }
+      }
+  
+      function showPrevious() {
+        if (currentSet > 0) {
+          sets[currentSet].style.display = 'none';
+          currentSet--;
+          sets[currentSet].style.display = 'flex';
+        }
+      }
+  
+      // Initial display
+      sets[0].style.display = 'flex';
+      
+    // Slideshow functionality
+    let slideIndex = 0;
+    const slides = document.getElementsByClassName('slide');
+
+    function showSlides() {
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].classList.remove('active');
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) {slideIndex = 1;}
+      slides[slideIndex - 1].classList.add('active');
+      setTimeout(showSlides, 3000); // Change image every 3 seconds
+    }
+
+    showSlides();
+
+    function performSearch() {
+        const query = document.getElementById("search-input").value.toLowerCase();
+        const resultsContainer = document.getElementById("results-container");
+        const branches = document.querySelectorAll('.branch-card');
+
+        // Clear previous results
+        resultsContainer.innerHTML = "";
+
+        if (query) {
+            let found = false; // Track if any results were found
+            branches.forEach(branch => {
+                const name = branch.querySelector('h3').innerText.toLowerCase();
+                const location = branch.querySelector('p').innerText.toLowerCase();
+
+                // Check for matches in name or location
+                if (name.includes(query) || location.includes(query)) {
+                    found = true; // Mark as found
+                    // Clone the branch card and append it to results only if not already added
+                    const clonedBranch = branch.cloneNode(true);
+                    clonedBranch.style.display = "block"; // Ensure the cloned element is displayed
+                    resultsContainer.appendChild(clonedBranch);
+                }
+            });
+
+            if (!found) {
+                resultsContainer.innerText = "No branch found.";
+            }
+        } else {
+            alert("Please enter a branch name or location.");
+        }
+    }
+
+    function bookNow() {
+        alert("Booking functionality not implemented yet."); // Placeholder function for booking
+    }
+
+    // Dark Mode Toggle
+    let isDarkMode = false;
+    function toggleDarkMode() {
+      const body = document.body;
+      const modeButton = document.getElementById('mode-button');
+
+      isDarkMode = !isDarkMode;
+
+      if (isDarkMode) {
+        body.classList.add('dark-mode');
+        modeButton.innerText = 'Light Mode';
+      } else {
+        body.classList.remove('dark-mode');
+        modeButton.innerText = 'Dark Mode';
+      }
+    }
+
+    // Side Menu Toggle
+    function toggleMenu() {
+  const sideMenu = document.getElementById('sideMenu');
+  const toggleButton = document.querySelector('.side-menu-toggle'); // Get the toggle button
+  
+  if (sideMenu.classList.contains('show')) {
+    sideMenu.classList.remove('show');
+    toggleButton.style.display = 'block'; // Show toggle button
+  } else {
+    sideMenu.classList.add('show');
+    toggleButton.style.display = 'none'; // Hide toggle button
+  }
+}
+
+
+    function bookNow(){
+      window.location.href = 'signup.php';
+      return false;
+    }
+  </script>
+</body>
+</html>
