@@ -35,7 +35,7 @@ if ($rooms < 1) $errors[] = "At least one room is required.";
 if (empty($payment_method)) $errors[] = "Payment method is required.";
 // if (empty($card_number) || !preg_match('/^[0-9]{16}$/', $card_number)) $errors[] = "Valid card number is required.";
 // if (empty($expiry_date)) $errors[] = "Expiry date is required.";
-if (empty($cvv) || !preg_match('/^[0-9]{3,4}$/', $cvv)) $errors[] = "Valid CVV is required.";
+// if (empty($cvv) || !preg_match('/^[0-9]{3,4}$/', $cvv)) $errors[] = "Valid CVV is required.";
 
 // If there are validation errors, print them
 if (!empty($errors)) {
