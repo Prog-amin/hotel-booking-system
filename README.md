@@ -31,7 +31,7 @@ A basic full-stack hotel reservation system built using PHP, HTML, and MySQL as 
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML, CSS (basic)
+- **Frontend**: HTML, CSS, JavaScript
 - **Backend**: PHP
 - **Database**: MySQL
 
